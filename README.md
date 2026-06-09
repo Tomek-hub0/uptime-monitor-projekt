@@ -15,3 +15,9 @@ Aplikace simuluje firemní web. Kvůli kolizi s funkcí AirPlay na macOS běží
 
 ### 2. Spuštění hlídacího psa (Bash)
 * **Spuštění kontroly:** `./monitor.sh`
+
+### 3. Nepřetržitý monitoring (Daemon)
+* **Spuštění nekonečné smyčky:** `./monitor.sh`
+* **Zastavení hlídače:** Zkratka `Ctrl + C`
+* **Historie kontrol:** Ukládá se do souboru `kontroly.log`
+* **Rychlá oprava (Restart webu):** `docker restart eshop-kontejner`

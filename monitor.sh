@@ -1,16 +1,23 @@
 #!/bin/bash
 
-# Změnili jsme port na 5001, aby nám do toho nekecal AirPlay z macOS
 URL="http://localhost:5001"
 
-echo "🐕 Spouštím hlídacího psa pro web: $URL"
+echo "🐕 Hlídací pes nastartoval a hlídá web v nekonečné smyčce..."
+echo "⏱️ Kontrola probíhá každých 5 vteřin. (Zastavíš mě pomocí Ctrl + C)"
 
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+while true; do
+    # Vytáhneme HTTP kód
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+    CAS=$(date +%H:%M:%S)
 
-echo "🔍 Kontrola webu... Výsledný HTTP kód je: $HTTP_CODE"
+    if [ "$HTTP_CODE" -eq 200 ]; then
+        echo "[$CAS] 🟢 Web je online (HTTP 200)"
+        echo "[$CAS] ONLINE" >> kontroly.log
+    else
+        echo "[$CAS] 🚨 DETEKCE PÁDU! Web vrátil HTTP $HTTP_CODE"
+        echo "[$CAS] VÝPADEK (HTTP $HTTP_CODE)" >> kontroly.log
+    fi
 
-if [ "$HTTP_CODE" -eq 200 ]; then
-    echo "🟢 E-shop funguje bez problémů."
-else
-    echo "🚨 POPLACH! Firemní e-shop spadl! HTTP kód je $HTTP_CODE"
-fi
+    # Počkej 5 vteřin před dalším kolem
+    sleep 5
+done
