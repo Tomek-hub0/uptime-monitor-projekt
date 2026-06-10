@@ -1,23 +1,25 @@
 # Uptime Monitor & Status Page Projekt
 
-Tento projekt slouží jako automatický hlídač dostupnosti webových aplikací.
+Tento projekt slouží jako automatický hlídač dostupnosti webových aplikací s ukládáním historie do databáze Redis.
+
+## 🏗️ Architektura projektu
+Projekt se skládá ze dvou kontejnerů řízených pomocí Docker Compose:
+1. **Flask Web (E-shop)** – Běží na portu `5001`. Má sabotážní adresu `/crash`.
+2. **Redis Databáze** – Běží na portu `6379`. Ukládá logy hlídače.
 
 ## Jak projekt nastartovat
 
-### 1. Spuštění falešného E-shopu (Docker)
-Aplikace simuluje firemní web. Kvůli kolizi s funkcí AirPlay na macOS běží na vnějším portu `5001`.
-
-* **Sestavení obrazu:** `docker build -t muj-eshop .`
-* **Spuštění kontejneru:** `docker run -d -p 5001:5000 --name eshop-kontejner muj-eshop`
-* **Testování:**
-  * Hlavní stránka: `http://localhost:5001` (Vrátí HTTP 200)
-  * Sabotáž (pád): `http://localhost:5001/crash` (Vrátí HTTP 500)
+### 1. Spuštění celé infrastruktury (Docker Compose)
+Tento příkaz stáhne databázi, sestaví e-shop a spustí oba kontejnery na pozadí:
+`docker compose up -d`
 
 ### 2. Spuštění hlídacího psa (Bash)
-* **Spuštění kontroly:** `./monitor.sh`
+Spustí nekonečnou smyčku, která každých 5 vteřin kontroluje web a posílá výsledky do Redisu:
+`./monitor.sh`
 
-### 3. Nepřetržitý monitoring (Daemon)
-* **Spuštění nekonečné smyčky:** `./monitor.sh`
-* **Zastavení hlídače:** Zkratka `Ctrl + C`
-* **Historie kontrol:** Ukládá se do souboru `kontroly.log`
-* **Rychlá oprava (Restart webu):** `docker restart eshop-kontejner`
+### 3. Kontrola dat v databázi Redis
+Pro zobrazení historie kontrol uložené uvnitř databáze použijte příkaz:
+`docker compose exec databaze redis-cli LRANGE uptime_logy 0 -1`
+
+### 🛑 Jak projekt kompletně vypnout a uklidit
+`docker compose down` 
