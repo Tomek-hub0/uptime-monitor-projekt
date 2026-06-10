@@ -1,8 +1,8 @@
-# 🕵️‍♂️ Uptime Monitor & Status Page Projekt
+# Uptime Monitor & Status Page Projekt
 
 Tento projekt slouží jako automatický hlídač dostupnosti webových aplikací.
 
-## 🛠️ Jak projekt nastartovat
+## Jak projekt nastartovat
 
 ### 1. Spuštění falešného E-shopu (Docker)
 Aplikace simuluje firemní web. Kvůli kolizi s funkcí AirPlay na macOS běží na vnějším portu `5001`.
